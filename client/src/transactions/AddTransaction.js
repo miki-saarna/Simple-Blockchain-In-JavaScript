@@ -2,7 +2,7 @@ import TransactionValidator from './TransactionValidator';
 
 
 
-function AddTransaction(transaction, signature, setPendingTransactions) {
+function AddTransaction(transaction, signature, setPendingTransactions, setInitiateMining) {
     if (!transaction.fromAddress || !transaction.toAddress) {
         throw new Error('Transaction must include from and to address');
     }
@@ -11,11 +11,11 @@ function AddTransaction(transaction, signature, setPendingTransactions) {
         throw new Error('Cannot add invalid transaction to the chain');
     }
     // add transaction to the mempool
-    setPendingTransactions((pendingTransactions) => ({
+    setPendingTransactions((pendingTransactions) => ([
         ...pendingTransactions,
         transaction
-    }))
-    // this.pendingTransactions.push(transaction);
+    ]))
+    setInitiateMining((currentValue) => !currentValue);
 }
 
 export default AddTransaction;

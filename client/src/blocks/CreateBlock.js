@@ -1,36 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+// import React, { useState, useEffect } from 'react';
 import CalculateHash from '../computations/CalculateHash';
 
-function Block({ timestamp, transactions, previousHash = '' }) {
+function Block(timestamp, transactions = [], previousHash = '') {
     const initialFormState = {
         timestamp: timestamp,
-        transaction: transactions,
+        transactions: transactions,
         previousHash: previousHash,
         nonce: 0,
     }
     
     const hash = CalculateHash(
         initialFormState.timestamp,
-        initialFormState.transaction,
+        initialFormState.transactions,
         initialFormState.previousHash,
         initialFormState.nonce,
     )
 
-    const [blockProperties, setBlockProperties] = useState(initialFormState);
+    // do I need to useState? Can I just return an object of the properties?
+    // const [blockProperties, setBlockProperties] = useState({...initialFormState, hash});
 
-    
+    // initialFormState["hash"] = hash;
 
-    initialFormState["hash"] = hash;
-
-    return blockProperties;
-
-    // return (
-    //     <>
-    //         {JSON.stringify(initialFormState)}
-    //     </>
-    // )
+    return {...initialFormState, hash};
 }
-
 
 export default Block;

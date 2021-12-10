@@ -6,18 +6,24 @@ import WalletValidator from '../wallets/WalletValidator';
 import CreateTransaction from '../transactions/CreateTransaction';
 import SignTransaction from '../transactions/SignTransaction';
 import AddTransaction from '../transactions/AddTransaction';
+import MinePendingTransactions from '../transactions/MinePendingTransactions';
 
 // import CreateBlock from '../blocks/CreateBlock';
 
-// if the wallets are created within Aggregator function, values of wallets change when retrieved from CreateTransaction function
+// if the wallets (and blockchain) are created within Aggregator function, values of wallets change when retrieved from CreateTransaction function
 // therefore, value of wallets must be initialized outside of Aggregator function
 // ask Akiva why this is...
+
+// potentially move variables outside of Aggregator to another file...
+
+// initializes the blockchain by creating the Genesis block
+const blockchain = CreateBlockchain();
+
+// initializes the wallets
 const myWallet = CreateWallet();
 const dannyWallet = CreateWallet();
 
 function Aggregator() {
-    
-    const blockchain = CreateBlockchain();
 
     const publicWallets =  {"My Wallet": myWallet.publicKey, "Danny's Wallet": dannyWallet.publicKey};
     
@@ -25,6 +31,8 @@ function Aggregator() {
     
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
+
+    const [initiateMining, setInitiateMining] = useState(false);
     
     // unsure if useEffect is necessary...
     useEffect(() => {
@@ -42,13 +50,23 @@ function Aggregator() {
             // or not number with the value...
             throw new Error('Must have...')
         } 
+        
         const signature = tx.fromAddress === myWallet.publicKey
             ? SignTransaction(tx, myWallet.keyPair)
             : SignTransaction(tx, dannyWallet.keyPair);
         
-        AddTransaction(tx, signature, setPendingTransactions);
-        
-    },[tx])
+        // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
+        AddTransaction(tx, signature, setPendingTransactions, setInitiateMining);
+
+    },[tx]);
+
+    useEffect(() => {
+        if(initiateMining) {
+            console.log('Starting the mining of Block 1...');
+            MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, myWallet.publicKey);
+            setInitiateMining(!initiateMining)
+        }
+    }, [initiateMining])
 
     return (
         <>
