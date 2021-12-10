@@ -9,25 +9,7 @@ function SignTransaction( { fromAddress, toAddress, amount }, signingKey ) {
     // miner transaction is valid
     if (fromAddress === null) return true;
 
-    // verify if source account is person's address
-    // struggling to get this validation to function properly... keys generated always changing upon each execution
-    // console.log(fromAddress)
-    // console.log(`signing 1: ${signingKey}`);
-    // console.log(`signing 2: ${signingKey}`);
-
-    // const keyA = signingKey;
-    // const keyB = signingKey;
-    // console.log(`is it true??? ${keyA === keyB}`)
-
-    // console.log(`signing 1: ${signingKey.getPublic('hex')}`)
-    // console.log(`signing 2: ${signingKey.getPublic('hex')}`)
-    // console.log(`signing 3: ${signingKey.getPublic('hex')}`)
-    // console.log(`fromAddress: ${fromAddress}`)
-
-
     if (signingKey.getPublic('hex') !== fromAddress) {
-        // console.log(signingKey.getPublic('hex'))
-        // console.log(fromAddress)
         throw new Error('You cannot sign transactions for other wallets!');
     }
 

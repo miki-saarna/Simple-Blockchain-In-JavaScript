@@ -23,33 +23,36 @@ function Aggregator() {
     
     console.log("Wallet from privateKey equals to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
     
-    const [tx1, setTx1] = useState({})
+    const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
     
     // unsure if useEffect is necessary...
     useEffect(() => {
-        if(JSON.stringify(tx1) === '{}') {
+        if(JSON.stringify(tx) === '{}') {
             return;
         }
         // update the validation below
-        if(!tx1.hasOwnProperty('fromAddress')) {
+        if(!tx.hasOwnProperty('fromAddress')) {
             throw new Error('Must have...')
         } 
-        if(!tx1.hasOwnProperty('toAddress')) {
+        if(!tx.hasOwnProperty('toAddress')) {
             throw new Error('Must have...')
         }
-        if(!tx1.hasOwnProperty('amount')) {
+        if(!tx.hasOwnProperty('amount')) {
             // or not number with the value...
             throw new Error('Must have...')
         } 
-        const signature = SignTransaction(tx1, myWallet.keyPair);
-        AddTransaction(tx1, signature, setPendingTransactions);
+        const signature = tx.fromAddress === myWallet.publicKey
+            ? SignTransaction(tx, myWallet.keyPair)
+            : SignTransaction(tx, dannyWallet.keyPair);
         
-    },[tx1])
+        AddTransaction(tx, signature, setPendingTransactions);
+        
+    },[tx])
 
     return (
         <>
-            {publicWallets !== undefined ? <CreateTransaction transaction={tx1} setTransaction={setTx1} wallets={publicWallets} /> : null}
+            {publicWallets !== undefined ? <CreateTransaction setTransaction={setTx} wallets={publicWallets} /> : null}
         </>
     )
 

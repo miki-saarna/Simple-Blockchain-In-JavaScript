@@ -14,11 +14,8 @@ function TransactionValidator({fromAddress, toAddress, amount}, signature) {
 
     // transcode fromAddress to get the public key (this process is reversible, as it is just a format conversion process)
     const publicKey = ec.keyFromPublic(fromAddress, 'hex');
-    console.log(Object.keys(publicKey))
     // use the public key to verify if the signature is correct, or more specifically if the transaction was actually initiated
-    console.log(publicKey.verify(CalculateHash(fromAddress, toAddress, amount), signature))
-    // return publicKey.verify(CalculateHash(fromAddress, toAddress, amount), signature)
-    return true;
+    return publicKey.verify(CalculateHash(fromAddress, toAddress, amount), signature);
 }
 
 export default TransactionValidator;
