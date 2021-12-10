@@ -31,7 +31,6 @@ function CreateTransaction({ setTransaction, wallets }) {
             [name]: value,
         }))
     }
-
     
     return (
         <>
