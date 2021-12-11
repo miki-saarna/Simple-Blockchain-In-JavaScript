@@ -1,8 +1,8 @@
 import TransactionValidator from "../transactions/TransactionValidator";
 
-function BlockValidator({ transactions }) {
+function BlockValidator({ transactions }, signature) {
     for (const tx of transactions) {
-        if (!TransactionValidator(tx)) {
+        if (!TransactionValidator(tx, signature)) {
             // add the isValid transaction validator
             return false;
         }

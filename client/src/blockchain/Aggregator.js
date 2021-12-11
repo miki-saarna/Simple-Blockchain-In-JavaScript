@@ -7,6 +7,8 @@ import CreateTransaction from '../transactions/CreateTransaction';
 import SignTransaction from '../transactions/SignTransaction';
 import AddTransaction from '../transactions/AddTransaction';
 import MinePendingTransactions from '../transactions/MinePendingTransactions';
+import GetWalletBalance from '../wallets/GetWalletBalance';
+import ChainValidator from './ChainValidator';
 
 // import CreateBlock from '../blocks/CreateBlock';
 
@@ -31,7 +33,7 @@ function Aggregator() {
     
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
-
+    const [signature, setSignature] = useState();
     const [initiateMining, setInitiateMining] = useState(false);
     
     // unsure if useEffect is necessary...
@@ -51,12 +53,14 @@ function Aggregator() {
             throw new Error('Must have...')
         } 
         
-        const signature = tx.fromAddress === myWallet.publicKey
+        const sign = tx.fromAddress === myWallet.publicKey
             ? SignTransaction(tx, myWallet.keyPair)
             : SignTransaction(tx, dannyWallet.keyPair);
+            // is it strange to use sign then assign then reuse sign within AddTransaction below???
+        setSignature(sign)
         
         // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
-        AddTransaction(tx, signature, setPendingTransactions, setInitiateMining);
+        AddTransaction(tx, sign, setPendingTransactions, setInitiateMining);
 
     },[tx]);
 
@@ -64,7 +68,25 @@ function Aggregator() {
         if(initiateMining) {
             console.log('Starting the mining of Block 1...');
             MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, myWallet.publicKey);
+            // the wallet balance checker probably isn't the best method...
+            // probably need to setState of wallet balances and also create balance validations so transfer can't be initiated if there is insufficient balance...
+            Object.entries(publicWallets).forEach((wallet) => {
+                console.log(`Balance of ${wallet[0]} account is: ${GetWalletBalance(blockchain, wallet[1])}`)
+            })
             setInitiateMining(!initiateMining)
+        }
+        if(!initiateMining && signature) {
+            // need to pass 1 or both wallets into ChainValidator to pass the transaction validator (needs signature)
+            // console.log(blockchain.chain[1].transactions[0])
+            console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
+
+            // turning amount into a string, but is there a way to leave as a number?
+            blockchain.chain[1].transactions[0].amount = '200';
+            // console.log(blockchain.chain[1].transactions[0])
+            console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
+
+            // just need to add additional info to match the example project's blockchain...
+            console.log(JSON.stringify(blockchain, null, 4));
         }
     }, [initiateMining])
 

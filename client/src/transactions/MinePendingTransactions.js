@@ -3,7 +3,7 @@ import MineBlock from '../blocks/MineBlock';
 
 
 function MinePendingTransactions({ chain, difficulty, miningReward}, pendingTransactions, setPendingTransactions, miningRewardAddress) {
-    
+
     // package all pending transactions together in the same block
     const latestBlock = chain[chain.length - 1];
     
@@ -11,6 +11,9 @@ function MinePendingTransactions({ chain, difficulty, miningReward}, pendingTran
     
     // // mining, that is, constantly trying nonce to make the hash Vluw meet the requirements
     block = MineBlock(block, difficulty);
+
+    // maybe good idea to print the block???
+    // console.log(block);
     
     console.log("block successfully mined!");
 
