@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-
-import CreateBlockchain from './CreateBlockchain';
-import CreateWallet from '../wallets/CreateWallet';
+// import CreateBlockchain from './CreateBlockchain';
+// import CreateWallet from '../wallets/CreateWallet';
 import WalletValidator from '../wallets/WalletValidator';
 import CreateTransaction from '../transactions/CreateTransaction';
 import SignTransaction from '../transactions/SignTransaction';
@@ -10,7 +9,6 @@ import MinePendingTransactions from '../transactions/MinePendingTransactions';
 import GetWalletBalance from '../wallets/GetWalletBalance';
 import ChainValidator from './ChainValidator';
 
-// import CreateBlock from '../blocks/CreateBlock';
 
 // if the wallets (and blockchain) are created within Aggregator function, values of wallets change when retrieved from CreateTransaction function
 // therefore, value of wallets must be initialized outside of Aggregator function
@@ -19,18 +17,20 @@ import ChainValidator from './ChainValidator';
 // potentially move variables outside of Aggregator to another file...
 
 // initializes the blockchain by creating the Genesis block
-const blockchain = CreateBlockchain();
+// const blockchain = CreateBlockchain();
 
 // initializes the wallets
-const myWallet = CreateWallet();
-const dannyWallet = CreateWallet();
+// const myWallet = CreateWallet();
+// const dannyWallet = CreateWallet();
 
-function Aggregator() {
+function Aggregator({ blockchain, myWallet, dannyWallet }) {
 
+    // use a map function???
     const publicWallets =  {"My Wallet": myWallet.publicKey, "Danny's Wallet": dannyWallet.publicKey};
     
-    console.log("Wallet from privateKey equals to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
+    console.log("Wallet from privateKey corresponds to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
     
+    // maybe instead of differentiating between 2 tx, just use a boolean to trigger first useEffect??
     const [txFormData, setTxFormData] = useState({})
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
@@ -67,7 +67,6 @@ function Aggregator() {
         if(JSON.stringify(txFormData) === '{}') {
             return;
         }
-        console.log(tx)
         // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
         AddTransaction(tx, signature, setPendingTransactions, setInitiateMining);
     }, [tx])

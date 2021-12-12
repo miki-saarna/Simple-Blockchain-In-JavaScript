@@ -18,7 +18,6 @@ function SignTransaction(transactionFormData, setTransaction, signingKey ) {
 
     setTransaction({
         ...transactionFormData,
-        hash: hash,
         siganture: signature,
     })
     

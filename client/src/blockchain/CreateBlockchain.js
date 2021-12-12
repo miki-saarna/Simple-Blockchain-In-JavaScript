@@ -1,9 +1,7 @@
 // import React, { useState, useEffect } from 'react';
 import CreateBlock from '../blocks/CreateBlock';
-import CalculateHash from '../computations/CalculateHash';
 
 function CreateBlockChain() {
-    
     const genesisBlock = CreateBlock(Date.now());
     const difficulty = 3;
     const miningReward = 100;

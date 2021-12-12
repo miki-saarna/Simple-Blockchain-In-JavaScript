@@ -1,27 +1,23 @@
 // import React, { useState, useEffect } from 'react';
 import CalculateHash from '../computations/CalculateHash';
+// rename to createGenesisBlock???
+function CreateBlock(timestamp, transactions = [], previousHash = '') {
+    const nonce = 0;
 
-function Block(timestamp, transactions = [], previousHash = '') {
-    const initialFormState = {
-        timestamp: timestamp,
-        transactions: transactions,
-        previousHash: previousHash,
-        nonce: 0,
-    }
-    
     const hash = CalculateHash(
-        initialFormState.timestamp,
-        initialFormState.transactions,
-        initialFormState.previousHash,
-        initialFormState.nonce,
+        timestamp,
+        transactions,
+        previousHash,
+        nonce,
     )
 
-    // do I need to useState? Can I just return an object of the properties?
-    // const [blockProperties, setBlockProperties] = useState({...initialFormState, hash});
-
-    // initialFormState["hash"] = hash;
-
-    return {...initialFormState, hash};
+    return {
+        timestamp,
+        transactions,
+        previousHash,
+        nonce,
+        hash,
+    };
 }
 
-export default Block;
+export default CreateBlock;
