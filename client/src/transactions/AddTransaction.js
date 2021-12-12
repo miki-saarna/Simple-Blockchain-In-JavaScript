@@ -10,12 +10,17 @@ function AddTransaction(transaction, signature, setPendingTransactions, setIniti
     if (!TransactionValidator(transaction, signature)) {
         throw new Error('Cannot add invalid transaction to the chain');
     }
+    transaction = {
+        ...transaction,
+        signature: signature,
+    }
+
     // add transaction to the mempool
     setPendingTransactions((pendingTransactions) => ([
         ...pendingTransactions,
         transaction,
     ]))
-    setInitiateMining((currentValue) => !currentValue);
+    setInitiateMining(true);
 }
 
 export default AddTransaction;

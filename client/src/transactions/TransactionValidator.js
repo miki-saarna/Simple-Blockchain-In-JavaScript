@@ -1,7 +1,5 @@
 import CalculateHash from '../computations/CalculateHash';
-import SHA256 from 'crypto-js/sha256'
 import Elliptic from 'elliptic';
-
 const ec = new Elliptic.ec('secp256k1');
 
 function TransactionValidator({fromAddress, toAddress, amount}, signature) {

@@ -1,6 +1,6 @@
 // import React, { useState, useEffect } from 'react';
 import CalculateHash from '../computations/CalculateHash';
-// rename to createGenesisBlock???
+
 function CreateBlock(timestamp, transactions = [], previousHash = '') {
     const nonce = 0;
 

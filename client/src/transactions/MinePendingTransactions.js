@@ -4,9 +4,9 @@ import MineBlock from '../blocks/MineBlock';
 
 function MinePendingTransactions({ chain, difficulty, miningReward}, pendingTransactions, setPendingTransactions, miningRewardAddress) {
 
-    // package all pending transactions together in the same block
     const latestBlock = chain[chain.length - 1];
     
+    // package all pending transactions together in the same block
     let block = CreateBlock(Date.now(), pendingTransactions, latestBlock.hash);
     
     // // mining, that is, constantly trying nonce to make the hash Vluw meet the requirements

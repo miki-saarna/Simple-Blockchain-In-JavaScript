@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-function CreateTransaction({ setTransaction, wallets }) {
+function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
     
     const initialFormState = {
         fromAddress: '',
@@ -21,11 +21,17 @@ function CreateTransaction({ setTransaction, wallets }) {
 
     function submitHandler(event) {
         event.preventDefault();
-        setTransaction(transactionProperties)
-        setTransactionsProperties(initialFormState)
+        setTransaction(transactionProperties);
+        setFormSubmission(true);
+        setTransactionsProperties(initialFormState);
     }
 
     function changeHandler({ target: { name, value } }) {
+        // any simpler way to convert to number?
+        if(Number.isInteger(parseInt(value))) {
+            value = parseInt(value);
+        }
+        
         setTransactionsProperties((previousTransactionProperties) => ({
             ...previousTransactionProperties,
             [name]: value,
