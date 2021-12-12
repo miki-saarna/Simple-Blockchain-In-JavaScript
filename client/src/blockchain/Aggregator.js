@@ -8,6 +8,7 @@ import AddTransaction from '../transactions/AddTransaction';
 import MinePendingTransactions from '../transactions/MinePendingTransactions';
 import GetWalletBalance from '../wallets/GetWalletBalance';
 import ChainValidator from './ChainValidator';
+import AttemptToAlterChain from './AttemptToAlterChain';
 
 
 // if the wallets (and blockchain) are created within Aggregator function, values of wallets change when retrieved from CreateTransaction function
@@ -89,9 +90,11 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
             // console.log(blockchain.chain[1].transactions[0])
             console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
 
+            AttemptToAlterChain(blockchain, 200, signature)
             // causing issues with account balanced...
             // turning amount into a string, but is there a way to leave as a number?
-            blockchain.chain[1].transactions[0].amount = '200';
+            // const originalAmount = blockchain.chain[1].transactions[0].amount;
+            // blockchain.chain[1].transactions[0].amount = 200;
             // console.log(blockchain.chain[1].transactions[0])
             console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
 
