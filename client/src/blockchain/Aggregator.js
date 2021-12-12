@@ -31,6 +31,7 @@ function Aggregator() {
     
     console.log("Wallet from privateKey equals to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
     
+    const [txFormData, setTxFormData] = useState({})
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
     const [signature, setSignature] = useState();
@@ -38,31 +39,38 @@ function Aggregator() {
     
     // unsure if useEffect is necessary...
     useEffect(() => {
-        if(JSON.stringify(tx) === '{}') {
+        if(JSON.stringify(txFormData) === '{}') {
             return;
         }
         // update the validation below
-        if(!tx.hasOwnProperty('fromAddress')) {
+        if(!txFormData.hasOwnProperty('fromAddress')) {
             throw new Error('Must have...')
         } 
-        if(!tx.hasOwnProperty('toAddress')) {
+        if(!txFormData.hasOwnProperty('toAddress')) {
             throw new Error('Must have...')
         }
-        if(!tx.hasOwnProperty('amount')) {
+        if(!txFormData.hasOwnProperty('amount')) {
             // or not number with the value...
             throw new Error('Must have...')
         } 
         
-        const sign = tx.fromAddress === myWallet.publicKey
-            ? SignTransaction(tx, myWallet.keyPair)
-            : SignTransaction(tx, dannyWallet.keyPair);
+        const sign = txFormData.fromAddress === myWallet.publicKey
+            ? SignTransaction(txFormData, setTx, myWallet.keyPair)
+            : SignTransaction(txFormData, setTx, dannyWallet.keyPair);
             // is it strange to use sign then assign then reuse sign within AddTransaction below???
         setSignature(sign)
         
+        
+    },[txFormData]);
+    
+    useEffect(() => {
+        if(JSON.stringify(txFormData) === '{}') {
+            return;
+        }
+        console.log(tx)
         // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
-        AddTransaction(tx, sign, setPendingTransactions, setInitiateMining);
-
-    },[tx]);
+        AddTransaction(tx, signature, setPendingTransactions, setInitiateMining);
+    }, [tx])
 
     useEffect(() => {
         if(initiateMining) {
@@ -86,13 +94,13 @@ function Aggregator() {
             console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
 
             // just need to add additional info to match the example project's blockchain...
-            console.log(JSON.stringify(blockchain, null, 4));
+            console.log(JSON.stringify({ ...blockchain, pendingTransactions }, null, 4));
         }
     }, [initiateMining])
 
     return (
         <>
-            {publicWallets !== undefined ? <CreateTransaction setTransaction={setTx} wallets={publicWallets} /> : null}
+            {publicWallets !== undefined ? <CreateTransaction setTransaction={setTxFormData} wallets={publicWallets} /> : null}
         </>
     )
 

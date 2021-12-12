@@ -1,7 +1,8 @@
 import CalculateHash from "../computations/CalculateHash";
 
-function SignTransaction( { fromAddress, toAddress, amount }, signingKey ) {
+function SignTransaction(transactionFormData, setTransaction, signingKey ) {
     
+    const { fromAddress, toAddress, amount } = transactionFormData;
     // miner transaction is valid
     if (fromAddress === null) return true;
 
@@ -14,6 +15,12 @@ function SignTransaction( { fromAddress, toAddress, amount }, signingKey ) {
     const sign = signingKey.sign(hash, 'base64');
     // convert the signature to the DER format
     const signature = sign.toDER('hex');
+
+    setTransaction({
+        ...transactionFormData,
+        hash: hash,
+        siganture: signature,
+    })
     
     console.log("signature: " + signature);
     return signature

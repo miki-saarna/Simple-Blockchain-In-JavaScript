@@ -13,7 +13,7 @@ function AddTransaction(transaction, signature, setPendingTransactions, setIniti
     // add transaction to the mempool
     setPendingTransactions((pendingTransactions) => ([
         ...pendingTransactions,
-        transaction
+        transaction,
     ]))
     setInitiateMining((currentValue) => !currentValue);
 }
