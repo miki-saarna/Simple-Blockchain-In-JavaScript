@@ -1,14 +1,16 @@
 import SHA256 from 'crypto-js/sha256'
 
-// rename parameters to be more inclusive???
+// decided not to consolidate the 2 similar functions below into 1 function due to awkward parameter naming conventions
 function CalculateHash(timestamp, transactions, previousHash, nonce) {
-    if(!nonce) {
-        return SHA256(timestamp + transactions + previousHash).toString()    
-        
-        // return SHA256(timestamp + JSON.stringify(transactions) + previousHash).toString()    
-    }
     return SHA256(timestamp + JSON.stringify(transactions) + previousHash + nonce).toString()
 }
 
-export default CalculateHash;
+function CalculateHashForTransaction(timestamp, fromAddress, toAddress, amount) {
+    return SHA256(timestamp + fromAddress + toAddress + amount).toString()
+}
+
+export {
+    CalculateHash,
+    CalculateHashForTransaction,
+}
 

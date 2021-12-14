@@ -1,5 +1,5 @@
-import BlockValidator from "../blocks/BlockValidator";
-import CalculateHash from "../computations/CalculateHash";
+import BlockValidator from "./BlockValidator";
+import {CalculateHash} from "../computations/CalculateHash";
 
 function ChainValidator({ chain }, signature) {
     // traverse blocks in the chain, having the previous and the current blocks

@@ -1,6 +1,6 @@
-import CalculateHash from "../computations/CalculateHash";
+import {CalculateHashForTransaction} from "../computations/CalculateHash";
 
-function SignTransaction({ fromAddress, toAddress, amount }, signingKey ) {
+function SignTransaction({ timestamp, fromAddress, toAddress, amount }, signingKey ) {
 
     // miner transaction is valid
     if (fromAddress === null) return true;
@@ -10,7 +10,7 @@ function SignTransaction({ fromAddress, toAddress, amount }, signingKey ) {
     }
 
     // sign transaction hash with the private key
-    const hash = CalculateHash(fromAddress, toAddress, amount);
+    const hash = CalculateHashForTransaction(timestamp, fromAddress, toAddress, amount);
     const sign = signingKey.sign(hash, 'base64');
     // convert the signature to the DER format
     const signature = sign.toDER('hex');

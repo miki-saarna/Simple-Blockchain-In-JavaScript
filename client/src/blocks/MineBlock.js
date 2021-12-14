@@ -1,4 +1,4 @@
-import CalculateHash from "../computations/CalculateHash";
+import {CalculateHash} from "../computations/CalculateHash";
 
 function MineBlock({ timestamp, transactions, previousHash, nonce, hash }, difficulty) {
     // creates hash until hash criteria is met

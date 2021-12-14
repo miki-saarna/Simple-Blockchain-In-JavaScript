@@ -1,5 +1,6 @@
 import './App.css';
 import CreateBlockchain from './blockchain/CreateBlockchain';
+import CreateWalletName from './wallets/CreateWalletName';
 import CreateWallet from './wallets/CreateWallet';
 import Aggregator from './blockchain/Aggregator';
 
@@ -12,6 +13,7 @@ function App() {
 
   return (
     <>
+      <CreateWalletName />
       <Aggregator blockchain={blockchain} myWallet={myWallet} dannyWallet={dannyWallet} />
     </>
   );

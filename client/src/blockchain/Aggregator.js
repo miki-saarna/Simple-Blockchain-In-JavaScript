@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-// import CreateBlockchain from './CreateBlockchain';
-// import CreateWallet from '../wallets/CreateWallet';
-import WalletValidator from '../wallets/WalletValidator';
+import WalletValidator from '../validators/WalletValidator';
 import CreateTransaction from '../transactions/CreateTransaction';
 import SignTransaction from '../transactions/SignTransaction';
 import AddTransaction from '../transactions/AddTransaction';
 import MinePendingTransactions from '../transactions/MinePendingTransactions';
 import GetWalletBalance from '../wallets/GetWalletBalance';
-import ChainValidator from './ChainValidator';
+import ChainValidator from '../validators/ChainValidator';
 import AttemptToAlterChain from './AttemptToAlterChain';
 
 
@@ -23,7 +21,6 @@ import AttemptToAlterChain from './AttemptToAlterChain';
 // initializes the wallets
 // const myWallet = CreateWallet();
 // const dannyWallet = CreateWallet();
-
 function Aggregator({ blockchain, myWallet, dannyWallet }) {
 
     // use a map function???
@@ -67,7 +64,7 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
         // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
         AddTransaction(tx, sign, setPendingTransactions, setInitiateMining);
 
-        // end calling functions used for form submission/adding transaction
+        // end calling functions used for form submission/adding transaction -> alternative way to use this?
         setFormSubmission(false);
         
     },[formSubmission]);
@@ -81,21 +78,14 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
             // probably need to setState of wallet balances and also create balance validations so transfer can't be initiated if there is insufficient balance...
             // strange balance numbers... are miningRewards working properly?
             Object.entries(publicWallets).forEach((wallet) => {
-                console.log(`Balance of ${wallet[0]} account is: ${GetWalletBalance(blockchain, wallet[1])}`)
+                console.log(`Balance of ${wallet[0]} is: ${GetWalletBalance(blockchain, wallet[1])}`)
             })
             setInitiateMining(!initiateMining)
         }
         if(!initiateMining && signature) {
-            // need to pass 1 or both wallets into ChainValidator to pass the transaction validator (needs signature)
-            // console.log(blockchain.chain[1].transactions[0])
             console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
 
             AttemptToAlterChain(blockchain, 200, signature)
-            // causing issues with account balanced...
-            // turning amount into a string, but is there a way to leave as a number?
-            // const originalAmount = blockchain.chain[1].transactions[0].amount;
-            // blockchain.chain[1].transactions[0].amount = 200;
-            // console.log(blockchain.chain[1].transactions[0])
             console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
 
             // just need to add additional info to match the example project's blockchain...

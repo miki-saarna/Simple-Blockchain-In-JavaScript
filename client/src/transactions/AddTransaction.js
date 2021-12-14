@@ -1,4 +1,4 @@
-import TransactionValidator from './TransactionValidator';
+import TransactionValidator from '../validators/TransactionValidator';
 
 
 

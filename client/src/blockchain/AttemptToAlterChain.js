@@ -1,8 +1,12 @@
-import ChainValidator from "./ChainValidator";
+import ChainValidator from "../validators/ChainValidator";
 
-export default function AttemptToAlterChain(blockchain, amount, signature) {
+export default function AttemptToAlterChain(blockchain, alteredAmount, signature) {
+    // obtain original transaction amount
     const originalAmount = blockchain.chain[1].transactions[0].amount;
-    blockchain.chain[1].transactions[0].amount = amount
+    // altered transaciton amount
+    blockchain.chain[1].transactions[0].amount = alteredAmount;
+    // evaluate if the blockchain is still valid after altering transaction amount
     console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature, originalAmount));
+    // return altered transaction amount to original amount
     blockchain.chain[1].transactions[0].amount = originalAmount;
 }

@@ -1,5 +1,5 @@
 // import React, { useState, useEffect } from 'react';
-import CalculateHash from '../computations/CalculateHash';
+import {CalculateHash} from '../computations/CalculateHash';
 
 function CreateBlock(timestamp, transactions = [], previousHash = '') {
     const nonce = 0;

@@ -6,6 +6,7 @@ function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
         fromAddress: '',
         toAddress: '',
         amount: '',
+        timestamp: '',
     }
 
     const [transactionProperties, setTransactionsProperties] = useState(initialFormState);
@@ -21,7 +22,10 @@ function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
 
     function submitHandler(event) {
         event.preventDefault();
-        setTransaction(transactionProperties);
+        setTransaction({
+            ...transactionProperties,
+            timestamp: Date.now(),
+        });
         setFormSubmission(true);
         setTransactionsProperties(initialFormState);
     }
