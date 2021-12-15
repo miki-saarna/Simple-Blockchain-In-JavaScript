@@ -57,7 +57,8 @@ export default function CreateWalletName({ walletList, setWalletList }) {
 
         <>
             <h2>Wallet Creation</h2>
-            <h4>Create at least 2 wallets</h4>
+            {walletList.length === 0 ? <h4>Create at least 2 wallets</h4> : null}
+            {walletList.length === 1 ? <h4>Create 1 more wallet</h4> : null}
 
             <form onSubmit={submitHandler}>
                 <label htmlFor='name'>

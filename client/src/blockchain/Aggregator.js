@@ -24,6 +24,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
     
     // unsure if useEffect is necessary...
     useEffect(() => {
+        // fix this...
         if(!formSubmission) {
             return;
         }
@@ -37,12 +38,10 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
         if(!tx.hasOwnProperty('amount')) {
             // or not number with the value...
             throw new Error('Must have...')
-        } 
-        
-        // create to match any wallet... fix here...
-        const sign = tx.fromAddress === walletList[0].publicKey
-            ? SignTransaction(tx, walletList[0].keyPair)
-            : SignTransaction(tx, walletList[1].keyPair);
+        }
+        const senderWalletAddress = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
+        console.log(senderWalletAddress)
+        const sign = SignTransaction(tx, senderWalletAddress.keyPair)
             // is it strange to use sign then assign then reuse sign within AddTransaction below???
             // way to remove below??
         setSignature(sign)
@@ -59,13 +58,18 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
         if(initiateMining) {
 
             console.log(`Starting the mining of Block ${blockchain.chain.length}...`);
-            MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, myWallet.publicKey);
+            // chooses random wallet to be the miner
+            MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, walletList[Math.floor(Math.random() * (walletList.length))].publicKey);
+            // MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, myWallet.publicKey);
             // the wallet balance checker probably isn't the best method...
             // probably need to setState of wallet balances and also create balance validations so transfer can't be initiated if there is insufficient balance...
             // strange balance numbers... are miningRewards working properly?
-            Object.entries(publicWallets).forEach((wallet) => {
-                console.log(`Balance of ${wallet[0]} is: ${GetWalletBalance(blockchain, wallet[1])}`)
+            walletList.forEach((wallet) => {
+                console.log(`Balance of ${wallet.name}\'s wallet is: ${GetWalletBalance(blockchain, wallet.publicKey)}`)
             })
+            // Object.entries(publicWallets).forEach((wallet) => {
+            //     console.log(`Balance of ${wallet[0]} is: ${GetWalletBalance(blockchain, wallet[1])}`)
+            // })
             setInitiateMining(!initiateMining)
         }
         if(!initiateMining && signature) {

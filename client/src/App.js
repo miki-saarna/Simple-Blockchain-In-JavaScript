@@ -8,7 +8,6 @@ import Aggregator from './blockchain/Aggregator';
 // const walletList = [];
 
 function App() {
-  // these 3 variables were originally initialized within aggregator
   // initializes the blockchain by creating the Genesis block
   const blockchain = CreateBlockchain();
   const myWallet = CreateWallet();

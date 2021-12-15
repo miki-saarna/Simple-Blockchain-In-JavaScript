@@ -1,10 +1,10 @@
 import {CalculateHashForTransaction} from "../computations/CalculateHash";
 
-function SignTransaction({ timestamp, fromAddress, toAddress, amount }, signingKey ) {
+function SignTransaction({ timestamp, fromAddress, toAddress, amount }, signingKey) {
 
     // miner transaction is valid
     if (fromAddress === null) return true;
-
+    console.log(signingKey)
     if (signingKey.getPublic('hex') !== fromAddress) {
         throw new Error('You cannot sign transactions for other wallets!');
     }
