@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
+function CreateTransaction({ setTransaction, walletList, wallets, setFormSubmission }) {
     
     const initialFormState = {
         fromAddress: '',
@@ -13,7 +13,7 @@ function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
 
     function walletSelector(event, toOrFrom, walletAddress) {
         event.preventDefault();
-
+        
         setTransactionsProperties((previousTransactionProperties) => ({
             ...previousTransactionProperties,
             [toOrFrom]: walletAddress,
@@ -60,12 +60,16 @@ function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
                   required
                 >
                 </input>
-                <ul>
+                {/* <ul>
                     {Object.entries(wallets).map((wallet, index) => {
                         return (
                             <li key={index} onClick={(event) => walletSelector(event, "fromAddress", wallet[1])}>{wallet[0]}</li>
                         )
                     })}
+                </ul> */}
+
+                <ul>
+                    {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'fromAddress', wallet.publicKey)}>{wallet.name}</li>)}
                 </ul>
 
                 <label htmlFor="toAddress">
@@ -82,11 +86,12 @@ function CreateTransaction({ setTransaction, wallets, setFormSubmission }) {
                 >
                 </input>
                 <ul>
-                    {Object.entries(wallets).map((wallet, index) => {
+                    {/* {Object.entries(wallets).map((wallet, index) => {
                         return (
                             <li key={index} onClick={(event) => walletSelector(event, "toAddress", wallet[1])}>{wallet[0]}</li>
                         )
-                    })}
+                    })} */}
+                    {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'toAddress', wallet.publicKey)}>{wallet.name}</li>)}
                 </ul>
                 
                 <label htmlFor="amount">

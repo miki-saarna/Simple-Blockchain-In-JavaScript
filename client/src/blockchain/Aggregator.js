@@ -8,20 +8,7 @@ import GetWalletBalance from '../wallets/GetWalletBalance';
 import ChainValidator from '../validators/ChainValidator';
 import AttemptToAlterChain from './AttemptToAlterChain';
 
-
-// if the wallets (and blockchain) are created within Aggregator function, values of wallets change when retrieved from CreateTransaction function
-// therefore, value of wallets must be initialized outside of Aggregator function
-// ask Akiva why this is...
-
-// potentially move variables outside of Aggregator to another file...
-
-// initializes the blockchain by creating the Genesis block
-// const blockchain = CreateBlockchain();
-
-// initializes the wallets
-// const myWallet = CreateWallet();
-// const dannyWallet = CreateWallet();
-function Aggregator({ blockchain, myWallet, dannyWallet }) {
+function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
 
     // use a map function???
     const publicWallets =  {"My Wallet": myWallet.publicKey, "Danny's Wallet": dannyWallet.publicKey};
@@ -30,7 +17,6 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
     
     // maybe instead of differentiating between 2 tx, just use a boolean to trigger first useEffect??
     const [formSubmission, setFormSubmission] = useState(false);
-
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
     const [signature, setSignature] = useState();
@@ -38,8 +24,8 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
     
     // unsure if useEffect is necessary...
     useEffect(() => {
-        if(formSubmission === false) {
-            return true
+        if(!formSubmission) {
+            return;
         }
         // update the validation below
         if(!tx.hasOwnProperty('fromAddress')) {
@@ -54,9 +40,9 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
         } 
         
         // create to match any wallet...
-        const sign = tx.fromAddress === myWallet.publicKey
-            ? SignTransaction(tx, myWallet.keyPair)
-            : SignTransaction(tx, dannyWallet.keyPair);
+        const sign = tx.fromAddress === walletList[0].publicKey
+            ? SignTransaction(tx, walletList[0].keyPair)
+            : SignTransaction(tx, walletList[1].keyPair);
             // is it strange to use sign then assign then reuse sign within AddTransaction below???
             // way to remove below??
         setSignature(sign)
@@ -95,7 +81,7 @@ function Aggregator({ blockchain, myWallet, dannyWallet }) {
 
     return (
         <>
-            <CreateTransaction setTransaction={setTx} wallets={publicWallets} setFormSubmission={setFormSubmission} />
+            {walletList.length ? <CreateTransaction setTransaction={setTx} walletList={walletList} wallets={publicWallets} setFormSubmission={setFormSubmission} /> : null}
         </>
     )
 }

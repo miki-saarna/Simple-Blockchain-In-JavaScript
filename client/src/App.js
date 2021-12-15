@@ -1,8 +1,11 @@
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import CreateBlockchain from './blockchain/CreateBlockchain';
 import CreateWalletName from './wallets/CreateWalletName';
 import CreateWallet from './wallets/CreateWallet';
 import Aggregator from './blockchain/Aggregator';
+
+// const walletList = [];
 
 function App() {
   // these 3 variables were originally initialized within aggregator
@@ -10,11 +13,14 @@ function App() {
   const blockchain = CreateBlockchain();
   const myWallet = CreateWallet();
   const dannyWallet = CreateWallet();
+  
+  const [walletList, setWalletList] = useState([]);
+
 
   return (
     <>
-      <CreateWalletName />
-      <Aggregator blockchain={blockchain} myWallet={myWallet} dannyWallet={dannyWallet} />
+      <CreateWalletName walletList={walletList} setWalletList={setWalletList} />
+      <Aggregator blockchain={blockchain} walletList={walletList} myWallet={myWallet} dannyWallet={dannyWallet} />
     </>
   );
 }
