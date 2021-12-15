@@ -11,16 +11,19 @@ function ChainValidator({ chain }, signature) {
 
         // check if all transactions in the block are valid
         if (!BlockValidator(currentBlock, signature)) {
+            console.log('a')
             return false
         }
         // check if current block hash is valid
         if (currentBlock.hash !== CalculateHash(timestamp, transactions, previousHash, nonce)) {
             console.error("hash not equal: " + JSON.stringify(currentBlock));
+            console.log('b')
             return false;
         }
         // is there a way to destructure previousBlock without variable name collisions?
         if (currentBlock.previousHash !== CalculateHash(previousBlock.timestamp, previousBlock.transactions, previousBlock.previousHash, previousBlock.nonce)) {
             console.error("previous hash not right: " + JSON.stringify(currentBlock));
+            console.log('c')
             return false;
         }
     }

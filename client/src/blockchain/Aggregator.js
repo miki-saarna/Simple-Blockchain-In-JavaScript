@@ -21,7 +21,8 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
     const [pendingTransactions, setPendingTransactions] = useState([]);
     const [signature, setSignature] = useState();
     const [initiateMining, setInitiateMining] = useState(false);
-    
+    const [initiateWalletBalance, setInitiateWalletBalance] = useState(false);
+
     // unsure if useEffect is necessary...
     useEffect(() => {
         // fix this...
@@ -39,9 +40,8 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
             // or not number with the value...
             throw new Error('Must have...')
         }
-        const senderWalletAddress = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
-        console.log(senderWalletAddress)
-        const sign = SignTransaction(tx, senderWalletAddress.keyPair)
+        const senderWallet = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
+        const sign = SignTransaction(tx, senderWallet.keyPair)
             // is it strange to use sign then assign then reuse sign within AddTransaction below???
             // way to remove below??
         setSignature(sign)
@@ -64,24 +64,28 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
             // the wallet balance checker probably isn't the best method...
             // probably need to setState of wallet balances and also create balance validations so transfer can't be initiated if there is insufficient balance...
             // strange balance numbers... are miningRewards working properly?
-            walletList.forEach((wallet) => {
-                console.log(`Balance of ${wallet.name}\'s wallet is: ${GetWalletBalance(blockchain, wallet.publicKey)}`)
-            })
             // Object.entries(publicWallets).forEach((wallet) => {
-            //     console.log(`Balance of ${wallet[0]} is: ${GetWalletBalance(blockchain, wallet[1])}`)
-            // })
-            setInitiateMining(!initiateMining)
-        }
-        if(!initiateMining && signature) {
-            console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
+                //     console.log(`Balance of ${wallet[0]} is: ${GetWalletBalance(blockchain, wallet[1])}`)
+                // })
+                setInitiateWalletBalance(!initiateWalletBalance);
+                setInitiateMining(!initiateMining);
+            }
+        }, [initiateMining])
 
+    useEffect(() => {
+        if(initiateWalletBalance && signature) {
+            // separate into separate use effect to include mined amount....
+            walletList.forEach((wallet) => {
+                console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
+            })
+            console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
             AttemptToAlterChain(blockchain, 200, signature)
             console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
-
             // just need to add additional info to match the example project's blockchain...
             console.log(JSON.stringify({ ...blockchain, pendingTransactions }, null, 4));
+            setInitiateWalletBalance(!initiateWalletBalance);
         }
-    }, [initiateMining])
+    },[initiateWalletBalance]);
 
     return (
         <>
