@@ -39,7 +39,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
             throw new Error('Must have...')
         } 
         
-        // create to match any wallet...
+        // create to match any wallet... fix here...
         const sign = tx.fromAddress === walletList[0].publicKey
             ? SignTransaction(tx, walletList[0].keyPair)
             : SignTransaction(tx, walletList[1].keyPair);
@@ -81,7 +81,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
 
     return (
         <>
-            {walletList.length ? <CreateTransaction setTransaction={setTx} walletList={walletList} wallets={publicWallets} setFormSubmission={setFormSubmission} /> : null}
+            {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} wallets={publicWallets} setFormSubmission={setFormSubmission} /> : null}
         </>
     )
 }
