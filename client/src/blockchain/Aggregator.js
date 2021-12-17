@@ -73,7 +73,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
         }, [initiateMining])
 
     useEffect(() => {
-        if(initiateWalletBalance && signature) {
+        if(initiateWalletBalance && signature.length) {
             // separate into separate use effect to include mined amount....
             walletList.forEach((wallet) => {
                 console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
