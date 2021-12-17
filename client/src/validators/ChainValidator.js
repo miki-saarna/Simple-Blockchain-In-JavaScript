@@ -16,6 +16,8 @@ function ChainValidator({ chain }, signature) {
         }
         // check if current block hash is valid
         if (currentBlock.hash !== CalculateHash(timestamp, transactions, previousHash, nonce)) {
+            // seems to be an issue specifically when adding a 3rd wallet...
+            // check transactions -> check wallets
             console.error("hash not equal: " + JSON.stringify(currentBlock));
             console.log('b')
             return false;
