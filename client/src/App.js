@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import CreateBlockchain from './blockchain/CreateBlockchain';
 import CreateWalletName from './wallets/CreateWalletName';
@@ -6,10 +6,10 @@ import CreateWallet from './wallets/CreateWallet';
 import Aggregator from './blockchain/Aggregator';
 
 // const walletList = [];
+const blockchain = CreateBlockchain();
 
 function App() {
   // initializes the blockchain by creating the Genesis block
-  const blockchain = CreateBlockchain();
   const myWallet = CreateWallet();
   const dannyWallet = CreateWallet();
   

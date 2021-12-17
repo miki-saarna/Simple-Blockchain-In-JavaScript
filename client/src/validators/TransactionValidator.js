@@ -4,6 +4,7 @@ const ec = new Elliptic.ec('secp256k1');
 
 function TransactionValidator({timestamp, fromAddress, toAddress, amount}, signature) {
     // the miner transaction is valid
+    // below line no longer needed...
     if (fromAddress === null) return true;
 
     if (!signature || signature.length === 0) {
@@ -13,10 +14,6 @@ function TransactionValidator({timestamp, fromAddress, toAddress, amount}, signa
     // transcode fromAddress to get the public key (this process is reversible, as it is just a format conversion process)
     const publicKey = ec.keyFromPublic(fromAddress, 'hex');
     // use the public key to verify if the signature is correct, or more specifically if the transaction was actually initiated
-    // console.log(`transactionVali: ${CalculateHashForTransaction(timestamp, fromAddress, toAddress, amount)}`)
-    
-    console.log({timestamp, fromAddress, toAddress, amount})
-    console.log(`my sig: ${signature}`)
     return publicKey.verify(CalculateHashForTransaction(timestamp, fromAddress, toAddress, amount), signature);
 }
 

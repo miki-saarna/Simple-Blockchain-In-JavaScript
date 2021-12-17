@@ -11,15 +11,10 @@ function SignTransaction({ timestamp, fromAddress, toAddress, amount }, signingK
 
     // sign transaction hash with the private key
     const hash = CalculateHashForTransaction(timestamp, fromAddress, toAddress, amount);
-    // console.log(`signTransacti: ${hash}`)
-    
     
     const sign = signingKey.sign(hash, 'base64');
     // convert the signature to the DER format
     const signature = sign.toDER('hex');
-    // console.log(timestamp)
-    console.log(`sigiii: ${signature}`)
-    console.log({timestamp, fromAddress, toAddress, amount})
     
     
     console.log("signature: " + signature);

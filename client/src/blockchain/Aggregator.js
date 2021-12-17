@@ -13,6 +13,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
     // use a map function???
     const publicWallets =  {"My Wallet": myWallet.publicKey, "Danny's Wallet": dannyWallet.publicKey};
     
+    // move placement so it doesn't display multiple times in 1 transaction?
     console.log("Wallet from privateKey corresponds to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
     
     // maybe instead of differentiating between 2 tx, just use a boolean to trigger first useEffect??
@@ -80,7 +81,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
             })
             console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
             AttemptToAlterChain(blockchain, 200, signature)
-            // console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
+            
             // just need to add additional info to match the example project's blockchain...
             console.log(JSON.stringify({ ...blockchain, pendingTransactions }, null, 4));
             setInitiateWalletBalance(!initiateWalletBalance);
