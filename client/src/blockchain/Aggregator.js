@@ -19,7 +19,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
     const [formSubmission, setFormSubmission] = useState(false);
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
-    const [signature, setSignature] = useState();
+    const [signature, setSignature] = useState([]);
     const [initiateMining, setInitiateMining] = useState(false);
     const [initiateWalletBalance, setInitiateWalletBalance] = useState(false);
 
@@ -44,7 +44,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
         const sign = SignTransaction(tx, senderWallet.keyPair)
             // is it strange to use sign then assign then reuse sign within AddTransaction below???
             // way to remove below??
-        setSignature(sign)
+        setSignature([...signature, sign])
         
         // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
         AddTransaction(tx, sign, setPendingTransactions, setInitiateMining);
@@ -80,7 +80,7 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
             })
             console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
             AttemptToAlterChain(blockchain, 200, signature)
-            console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
+            // console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
             // just need to add additional info to match the example project's blockchain...
             console.log(JSON.stringify({ ...blockchain, pendingTransactions }, null, 4));
             setInitiateWalletBalance(!initiateWalletBalance);
