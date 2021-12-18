@@ -104,9 +104,16 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
         }
     },[initiateWalletBalance]);
 
+    // create to loop through transaction properties
+    const transactionProperties = [];
+    for(const property in tx) {
+        transactionProperties.push(`${property}: ${tx[property]}`)
+    }
+
     return (
         <>
             {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} wallets={publicWallets} setFormSubmission={setFormSubmission} /> : null}
+            {tx ? <ul>{transactionProperties.map((properties, index) => <li key={index}>{properties}</li>)}</ul> : null}
         </>
     )
 }
