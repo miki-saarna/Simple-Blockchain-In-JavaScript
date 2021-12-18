@@ -32,31 +32,28 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
             const walletPublicAddresses = [];
             walletList.forEach((wallet) => walletPublicAddresses.push(wallet.publicKey))
             if (!walletPublicAddresses.includes(tx.fromAddress) || !walletPublicAddresses.includes(tx.toAddress)) {
-                throw new Error('Only valid addresses may be used for transactions...')
+                // throw new Error('Only valid addresses may be used for transactions...')
+                console.error('Only valid addresses may be used for transactions...');
+                setFormSubmission(false);
+                return;
             }
 
             // validate that transaction amount is greater than zero
             if (tx.amount <= 0) {
-                // console.error('Transaction amount must be a positive integer...')
-                throw new Error('Transaction amount must be a positive integer...')
+                // throw new Error('Transaction amount must be a positive integer...')
+                console.error('Transaction amount must be a positive integer...');
+                setFormSubmission(false);
+                return;
             }
             
             // validate the sender wallet has enough funds to complete the transaction
             const walletMaxTx = walletList.find((wallet) => wallet.publicKey === tx.fromAddress)
             if (tx.amount > walletMaxTx.amount + GetWalletBalance(blockchain, walletMaxTx.publicKey)) {
-                throw new Error('This wallet does not have enough funds to send this transaciton');
+                // throw new Error('This wallet does not have enough funds to send this transaciton');
+                console.error('This wallet does not have enough funds to send this transaction...');
+                setFormSubmission(false);
+                return;
             }
-
-            // if(!tx.hasOwnProperty('fromAddress')) {
-            //     throw new Error('Must have fromAddress property...')
-            // } 
-            // if(!tx.hasOwnProperty('toAddress')) {
-            //     throw new Error('Must have fromAddress property...')
-            // }
-            // if(!tx.hasOwnProperty('amount')) {
-            //     // or not number with the value...
-            //     throw new Error('Must have amount property...')
-            // }
 
             const senderWallet = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
             const sign = SignTransaction(tx, senderWallet.keyPair)
