@@ -16,42 +16,61 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
     // move placement so it doesn't display multiple times in 1 transaction?
     console.log("Wallet from privateKey corresponds to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
     
-    // maybe instead of differentiating between 2 tx, just use a boolean to trigger first useEffect??
     const [formSubmission, setFormSubmission] = useState(false);
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
     const [signature, setSignature] = useState([]);
     const [initiateMining, setInitiateMining] = useState(false);
     const [initiateWalletBalance, setInitiateWalletBalance] = useState(false);
+    // const [balanceofWallets, setBalanceOfWallets] = useState(walletList.)
 
     // unsure if useEffect is necessary...
     useEffect(() => {
-        // fix this...
-        if(!formSubmission) {
-            return;
-        }
-        // update the validation below
-        if(!tx.hasOwnProperty('fromAddress')) {
-            throw new Error('Must have...')
-        } 
-        if(!tx.hasOwnProperty('toAddress')) {
-            throw new Error('Must have...')
-        }
-        if(!tx.hasOwnProperty('amount')) {
-            // or not number with the value...
-            throw new Error('Must have...')
-        }
-        const senderWallet = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
-        const sign = SignTransaction(tx, senderWallet.keyPair)
-            // is it strange to use sign then assign then reuse sign within AddTransaction below???
-            // way to remove below??
-        setSignature([...signature, sign])
-        
-        // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
-        AddTransaction(tx, sign, setPendingTransactions, setInitiateMining);
+        if(formSubmission) {
 
-        // end calling functions used for form submission/adding transaction -> alternative way to use this?
-        setFormSubmission(false);
+            // validate that the public addresses used for transaction are valid addresses
+            const walletPublicAddresses = [];
+            walletList.forEach((wallet) => walletPublicAddresses.push(wallet.publicKey))
+            if (!walletPublicAddresses.includes(tx.fromAddress) || !walletPublicAddresses.includes(tx.toAddress)) {
+                throw new Error('Only valid addresses may be used for transactions...')
+            }
+
+            // validate that transaction amount is greater than zero
+            if (tx.amount <= 0) {
+                // console.error('Transaction amount must be a positive integer...')
+                throw new Error('Transaction amount must be a positive integer...')
+            }
+            
+            // validate the sender wallet has enough funds to complete the transaction
+            const walletMaxTx = walletList.find((wallet) => wallet.publicKey === tx.fromAddress)
+            if (tx.amount > walletMaxTx.amount + GetWalletBalance(blockchain, walletMaxTx.publicKey)) {
+                throw new Error('This wallet does not have enough funds to send this transaciton');
+            }
+
+            // if(!tx.hasOwnProperty('fromAddress')) {
+            //     throw new Error('Must have fromAddress property...')
+            // } 
+            // if(!tx.hasOwnProperty('toAddress')) {
+            //     throw new Error('Must have fromAddress property...')
+            // }
+            // if(!tx.hasOwnProperty('amount')) {
+            //     // or not number with the value...
+            //     throw new Error('Must have amount property...')
+            // }
+
+            const senderWallet = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
+            const sign = SignTransaction(tx, senderWallet.keyPair)
+                // is it strange to use sign then assign then reuse sign within AddTransaction below???
+                // way to remove below??
+            setSignature([...signature, sign])
+
+            // sets pendingTransactions, but might be smarter to assign pendingTransactions to a value below
+            AddTransaction(tx, sign, setPendingTransactions, setInitiateMining);
+
+            // end calling functions used for form submission/adding transaction -> alternative way to use this?
+            setFormSubmission(false);
+
+        }
         
     },[formSubmission]);
 
