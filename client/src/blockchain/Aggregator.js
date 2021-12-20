@@ -124,12 +124,17 @@ function Aggregator({ blockchain, walletList }) {
     return (
         <>
             <p>Number of blocks: {blockchain.chain.length}</p>
+            <div>{blockchain.chain.map((block, index) => <div key={index}>hello</div>)}</div>
             {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} setFormSubmission={setFormSubmission} /> : null}
             {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
-            {/* add wallet balances */}
+            {walletList.map((wallet, index) => <p key={index}>Balance of {wallet.name}'s wallet is: {wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}</p>)}
             <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>
         </>
     )
 }
 
 export default Aggregator;
+
+// walletList.forEach((wallet) => {
+//     console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
+// })
