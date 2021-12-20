@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import WalletValidator from '../validators/WalletValidator';
 import CreateTransaction from '../transactions/CreateTransaction';
 import SignTransaction from '../transactions/SignTransaction';
 import AddTransaction from '../transactions/AddTransaction';
@@ -33,6 +32,14 @@ function Aggregator({ blockchain, walletList }) {
             if (!walletPublicAddresses.includes(tx.fromAddress) || !walletPublicAddresses.includes(tx.toAddress)) {
                 // throw new Error('Only valid addresses may be used for transactions...')
                 console.error('Only valid addresses may be used for transactions...');
+                setTx({});
+                setFormSubmission(false);
+                return;
+            }
+
+            if (tx.fromAddress === tx.toAddress) {
+                console.error('The "From Address" and "To Address" cannot be the same wallets...');
+                setTx({});
                 setFormSubmission(false);
                 return;
             }
@@ -41,6 +48,7 @@ function Aggregator({ blockchain, walletList }) {
             if (tx.amount <= 0) {
                 // throw new Error('Transaction amount must be a positive integer...')
                 console.error('Transaction amount must be a positive integer...');
+                setTx({});
                 setFormSubmission(false);
                 return;
             }
@@ -50,6 +58,7 @@ function Aggregator({ blockchain, walletList }) {
             if (tx.amount > walletMaxTx.amount + GetWalletBalance(blockchain, walletMaxTx.publicKey)) {
                 // throw new Error('This wallet does not have enough funds to send this transaciton');
                 console.error('This wallet does not have enough funds to send this transaction...');
+                setTx({});
                 setFormSubmission(false);
                 return;
             }
@@ -111,12 +120,16 @@ function Aggregator({ blockchain, walletList }) {
     const transactionProperties = [];
     for(const property in tx) {
         if (property === 'fromAddress') {
-            const fromName = walletList.find((wallet) => wallet.publicKey === tx[property])
-            transactionProperties.push(`${property}: ${fromName.name}`)
+            const fromWallet = walletList.find((wallet) => wallet.publicKey === tx[property])
+            if (fromWallet) {
+                transactionProperties.push(`${property}: ${fromWallet.name}`)
+            }
         }
         if (property === 'toAddress') {
-            const toName = walletList.find((wallet) => wallet.publicKey === tx[property])
-            transactionProperties.push(`${property}: ${toName.name}`)
+            const toWallet = walletList.find((wallet) => wallet.publicKey === tx[property])
+            if (toWallet) {
+                transactionProperties.push(`${property}: ${toWallet.name}`)
+            }
         }
         if (property === 'amount') {
         transactionProperties.push(`${property}: ${tx[property]}`)
@@ -138,7 +151,7 @@ function Aggregator({ blockchain, walletList }) {
             {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
             <h4>Status:</h4>
             {initiateMining ? <p>Starting the mining of Block {blockchain.chain.length}...</p> : null}
-            {!initiateMining && blockchain.chain.length > 1 ? <p>Block successfully mined!</p> : null}
+            {!initiateMining && blockchain.chain.length > 1 ? <p>Block {blockchain.chain.length} successfully mined!</p> : null}
             <h3>Mined block:</h3>
             {blockchain.chain.length > 1 ? <ul><li>nonce: {minedBlock.nonce}</li><li>hash: {minedBlock.hash}</li></ul> : null}
             <h3>Pending Transaction(s):</h3>
