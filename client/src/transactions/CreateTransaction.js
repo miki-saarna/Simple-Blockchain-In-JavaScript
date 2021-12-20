@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function CreateTransaction({ setTransaction, walletList, wallets, setFormSubmission }) {
+function CreateTransaction({ setTransaction, walletList, setFormSubmission }) {
     
     const initialFormState = {
         fromAddress: '',

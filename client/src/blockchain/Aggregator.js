@@ -8,13 +8,12 @@ import GetWalletBalance from '../wallets/GetWalletBalance';
 import ChainValidator from '../validators/ChainValidator';
 import AttemptToAlterChain from './AttemptToAlterChain';
 
-function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
+function Aggregator({ blockchain, walletList }) {
 
-    // use a map function???
-    const publicWallets =  {"My Wallet": myWallet.publicKey, "Danny's Wallet": dannyWallet.publicKey};
     
     // move placement so it doesn't display multiple times in 1 transaction?
-    console.log("Wallet from privateKey corresponds to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
+    // fix the line of code below...
+    // console.log("Wallet from privateKey corresponds to publicKey?", WalletValidator(myWallet.privateKey, myWallet.publicKey));
     
     const [formSubmission, setFormSubmission] = useState(false);
     const [tx, setTx] = useState({})
@@ -54,6 +53,8 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
                 setFormSubmission(false);
                 return;
             }
+
+            // add validator for if to and from address are the same...
 
             const senderWallet = walletList.find((wallet) => wallet.publicKey === tx.fromAddress);
             const sign = SignTransaction(tx, senderWallet.keyPair)
@@ -122,8 +123,11 @@ function Aggregator({ blockchain, walletList, myWallet, dannyWallet }) {
 
     return (
         <>
-            {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} wallets={publicWallets} setFormSubmission={setFormSubmission} /> : null}
+            <p>Number of blocks: {blockchain.chain.length}</p>
+            {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} setFormSubmission={setFormSubmission} /> : null}
             {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
+            {/* add wallet balances */}
+            <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>
         </>
     )
 }
