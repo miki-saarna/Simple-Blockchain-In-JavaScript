@@ -75,9 +75,13 @@ function Aggregator({ blockchain, walletList }) {
     useEffect(() => {
         if(initiateMining) {
 
+            setTimeout(() => {
             console.log(`Starting the mining of Block ${blockchain.chain.length}...`);
             // chooses random wallet to be the miner
             MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, walletList[Math.floor(Math.random() * (walletList.length))].publicKey);
+            setInitiateWalletBalance(!initiateWalletBalance);
+            setInitiateMining(!initiateMining);
+            }, 2000)
             // MinePendingTransactions(blockchain, pendingTransactions, setPendingTransactions, myWallet.publicKey);
             // the wallet balance checker probably isn't the best method...
             // probably need to setState of wallet balances and also create balance validations so transfer can't be initiated if there is insufficient balance...
@@ -85,8 +89,6 @@ function Aggregator({ blockchain, walletList }) {
             // Object.entries(publicWallets).forEach((wallet) => {
                 //     console.log(`Balance of ${wallet[0]} is: ${GetWalletBalance(blockchain, wallet[1])}`)
                 // })
-                setInitiateWalletBalance(!initiateWalletBalance);
-                setInitiateMining(!initiateMining);
             }
         }, [initiateMining])
 
@@ -121,20 +123,32 @@ function Aggregator({ blockchain, walletList }) {
         } 
     }
 
+    // console.log(blockchain.chain[blockchain.chain.length - 1])
+    // check if exists elsewhere...
+    const minedBlock = blockchain.chain[blockchain.chain.length - 1]
+    
+
     return (
         <>
-            <p>Number of blocks: {blockchain.chain.length}</p>
+            <h3>Number of blocks: {blockchain.chain.length}</h3>
+            {/* use CSS to create blocks */}
             <div>{blockchain.chain.map((block, index) => <div key={index}>hello</div>)}</div>
             {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} setFormSubmission={setFormSubmission} /> : null}
+            <h3>Transaction details:</h3>
             {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
+            <h4>Status:</h4>
+            {initiateMining ? <p>Starting the mining of Block {blockchain.chain.length}...</p> : null}
+            {!initiateMining && blockchain.chain.length > 1 ? <p>Block successfully mined!</p> : null}
+            <h3>Mined block:</h3>
+            {blockchain.chain.length > 1 ? <ul><li>nonce: {minedBlock.nonce}</li><li>hash: {minedBlock.hash}</li></ul> : null}
+            <h3>Pending Transaction(s):</h3>
+            {pendingTransactions.map((pendingTransaction, index) => <ul key={index}><li>from Address:  -</li><li>to Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li><li>amount: {pendingTransaction.amount}</li></ul>)}
+            <h3>Wallet list:</h3>
             {walletList.map((wallet, index) => <p key={index}>Balance of {wallet.name}'s wallet is: {wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}</p>)}
+            <h3>Blockchain:</h3>
             <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>
         </>
     )
 }
 
 export default Aggregator;
-
-// walletList.forEach((wallet) => {
-//     console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
-// })
