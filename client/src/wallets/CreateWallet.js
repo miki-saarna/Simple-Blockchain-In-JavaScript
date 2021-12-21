@@ -56,11 +56,12 @@ export default function GenerateWalletKeysName({ walletList, setWalletList }) {
     return (
 
         <>
-            <h2>Wallet Creation</h2>
-            {walletList.length === 0 ? <h4>Create at least 2 wallets</h4> : null}
-            {walletList.length === 1 ? <h4>Create 1 more wallet</h4> : null}
 
             <form onSubmit={submitHandler}>
+                <h2>Wallet Creation</h2>
+                {/* change below to p elements instead of h4? */}
+                {walletList.length === 0 ? <h4 className='red'>Create at least 2 wallets</h4> : null}
+                {walletList.length === 1 ? <h4 className='red'>Create 1 more wallet</h4> : null}
                 <label htmlFor='name'>
                     New Wallet Name:
                 </label>
@@ -76,44 +77,46 @@ export default function GenerateWalletKeysName({ walletList, setWalletList }) {
 
                 <p>Select initial deposit amount:</p>
 
-                <input
-                  id='amount'
-                  name='amount'
-                //   type='number'
-                  type='radio'
-                  value='50'
-                  onChange={changeHandler}
-                  >
-                </input>
-                <label htmlFor='amount'>
-                    50
-                </label>
+                <div className='depositAmounts'>
+                    <input
+                      id='amount'
+                      name='amount'
+                    //   type='number'
+                      type='radio'
+                      value='10'
+                      onChange={changeHandler}
+                      >
+                    </input>
+                    <label htmlFor='amount'>
+                        10
+                    </label>
 
-                <input
-                  id='amount'
-                  name='amount'
-                //   type='number'
-                  type='radio'
-                  value='100'
-                  onChange={changeHandler}
-                  >
-                </input>
-                <label htmlFor='amount'>
-                    100
-                </label>
+                    <input
+                      id='amount'
+                      name='amount'
+                    //   type='number'
+                      type='radio'
+                      value='25'
+                      onChange={changeHandler}
+                      >
+                    </input>
+                    <label htmlFor='amount'>
+                        25
+                    </label>
 
-                <input
-                  id='amount'
-                  name='amount'
-                //   type='number'
-                  type='radio'
-                  value='200'
-                  onChange={changeHandler}
-                  >
-                </input>
-                <label htmlFor='amount'>
-                    200
-                </label>
+                    <input
+                      id='amount'
+                      name='amount'
+                    //   type='number'
+                      type='radio'
+                      value='50'
+                      onChange={changeHandler}
+                      >
+                    </input>
+                    <label htmlFor='amount'>
+                        50
+                    </label>
+                </div>
 
                 <button type='submit'>
                     Submit New Wallet

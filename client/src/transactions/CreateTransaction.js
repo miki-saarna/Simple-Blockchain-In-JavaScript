@@ -44,9 +44,10 @@ function CreateTransaction({ setTransaction, walletList, setFormSubmission }) {
     
     return (
         <>
-            <h2>New Transaction</h2>
             
             <form onSubmit={submitHandler}>
+                <h2>New Transaction</h2>
+                <p className='red'>Press a wallet name below to auto-fill the addresses and type an amount for the transaction</p>
                 <label htmlFor="fromAddress">
                     From Address:
                 </label>
@@ -68,7 +69,7 @@ function CreateTransaction({ setTransaction, walletList, setFormSubmission }) {
                     })}
                 </ul> */}
 
-                <ul>
+                <ul className='walletNames'>
                     {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'fromAddress', wallet.publicKey)}>{wallet.name}</li>)}
                 </ul>
 
@@ -85,7 +86,7 @@ function CreateTransaction({ setTransaction, walletList, setFormSubmission }) {
                   required
                 >
                 </input>
-                <ul>
+                <ul className='walletNames'>
                     {/* {Object.entries(wallets).map((wallet, index) => {
                         return (
                             <li key={index} onClick={(event) => walletSelector(event, "toAddress", wallet[1])}>{wallet[0]}</li>

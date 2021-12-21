@@ -148,29 +148,75 @@ function Aggregator({ blockchain, walletList }) {
 
     // console.log(blockchain.chain[blockchain.chain.length - 1])
     // check if exists elsewhere...
-    const minedBlock = blockchain.chain[blockchain.chain.length - 1]
+    const minedBlock = blockchain.chain[blockchain.chain.length - 1];
+
+    const pendingTransactionDetails = pendingTransactions.map((pendingTransaction, index) => {
+        if(!pendingTransaction.fromAddress) {
+            return (
+                <>
+                    <ul key={index}>
+                        <li>From Address:   -</li>
+                        <li>To Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li>
+                        <li>amount: {pendingTransaction.amount}</li>
+                    </ul>
+                </>
+            )
+        } else {
+            return (
+                <>
+                    <ul key={index}>
+                        <li>From Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.fromAddress).name}</li>
+                        <li>To Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li>
+                        <li>amount: {pendingTransaction.amount}</li>
+                    </ul>
+                </>
+            )
+        }
+    })
     
     return (
         <>
-            <h3>Number of blocks: {blockchain.chain.length}</h3>
-            {/* use CSS to create blocks */}
-            <div>{blockchain.chain.map((block, index) => <div key={index}>{index + 1}</div>)}</div>
+            <div className='section-details'>
+                <h3>Number of blocks: {blockchain.chain.length}</h3>
+                <div className='block-row'>
+                    {blockchain.chain.map((block, index) => <div key={index} className='block'><p>{index + 1}</p></div>)}
+                </div>
+            </div>
+
             {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} setFormSubmission={setFormSubmission} /> : null}
-            <h3>Transaction details:</h3>
-            {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
-            <h4>Status:</h4>
-            {initiateMining ? <p>Starting the mining of Block {blockchain.chain.length}...</p> : null}
-            {!initiateMining && blockchain.chain.length > 1 ? <p>Block {blockchain.chain.length} successfully mined!</p> : null}
-            <h3>Mined block:</h3>
-            {blockchain.chain.length > 1 ? <ul><li>nonce: {minedBlock.nonce}</li><li>hash: {minedBlock.hash}</li></ul> : null}
-            <h3>Pending Transaction(s):</h3>
-            {pendingTransactions.map((pendingTransaction, index) => <ul key={index}><li>from Address:   -</li><li>to Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li><li>amount: {pendingTransaction.amount}</li></ul>)}
-            <h3>Wallet list:</h3>
-            {walletList.map((wallet, index) => <p key={index}>Balance of {wallet.name}'s wallet is: {wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}</p>)}
+
+            <div className='section-details'>
+                <h3>Transaction details:</h3>
+                {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
+            </div>
+
+            <div className='section-details'>
+                <h4>Status:</h4>
+                {initiateMining ? <p>Starting the mining of Block {blockchain.chain.length}...</p> : null}
+                {!initiateMining && blockchain.chain.length > 1 ? <p>Block {blockchain.chain.length} successfully mined!</p> : null}
+            </div>
+
+            <div className='section-details'>
+                <h3>Mined block:</h3>
+                {blockchain.chain.length > 1 ? <ul><li>nonce: {minedBlock.nonce}</li><li>hash: {minedBlock.hash}</li></ul> : null}
+            </div>
+
+            <div className='section-details'>
+                <h3>Pending Transaction(s):</h3>
+                {pendingTransactionDetails}
+            </div>
+
+            <div className='section-details'>
+                <h3>Wallet list:</h3>
+                <ul>{walletList.map((wallet, index) => <li key={index}>Balance of {wallet.name}'s wallet is: {wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}</li>)}</ul>
+            </div>
+
             <FormToAlterChain blockchain={blockchain} signature={signature} walletList={walletList} />
 
-            <h3>Blockchain:</h3>
-            <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>
+            <div className='section-details'>
+                <h3>Blockchain:</h3>
+                <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>
+            </div>
         </>
     )
 }

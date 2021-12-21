@@ -67,11 +67,13 @@ export default function FormToAlterChain({ blockchain, signature, walletList }) 
         <>
             {blockchain.chain.length > 1 ?
             <>
+                <form onSubmit={submitHandler}>
                 <h3>Is the chain valid? {ChainValidator(blockchain, signature) ? 'Yes' : 'No'}</h3>
                 <h2>Alter chain:</h2>
-                <ul>{blockchain.chain.map((chain, index) => <li key={index} onClick={(event) => blockSelector(event, index)}>{index + 1}</li>)}</ul>
+                <p className='red'>Press a block to alter</p>
+                <ul className='block-row'>{blockchain.chain.map((chain, index) => <li key={index} className='block' onClick={(event) => blockSelector(event, index)}><p>{index + 1}</p></li>)}</ul>
                 {Object.keys(alteredTx).length ?
-                (<form onSubmit={submitHandler}>
+                    <><p className='red'>Press a wallet name below to change the addresses and/or input a different transaction amount (cannot alter Genesis Block)</p>
                     <label htmlFor='fromAddress'>
                         From address:
                     </label>
@@ -84,7 +86,7 @@ export default function FormToAlterChain({ blockchain, signature, walletList }) 
                     >
                     </input>
 
-                    <ul>
+                    <ul className='walletNames'>
                     {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'fromAddress', wallet.publicKey)}>{wallet.name}</li>)}
                     </ul>
 
@@ -100,7 +102,7 @@ export default function FormToAlterChain({ blockchain, signature, walletList }) 
                     >
                     </input>
 
-                    <ul>
+                    <ul className='walletNames'>
                     {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'toAddress', wallet.publicKey)}>{wallet.name}</li>)}
                     </ul>
 
@@ -119,12 +121,12 @@ export default function FormToAlterChain({ blockchain, signature, walletList }) 
 
                     <button type='submit'>
                         Submit Changes
-                    </button>
+                    </button></>
+                    : null}
+                {Object.keys(alteredTx).length ? <h3>Is the chain still valid? {chainValidity ? 'Yes' : 'No'}</h3> : null}
 
                 </form>
-                )
-                : null}
-                {Object.keys(alteredTx).length ? <h3>Is the chain still valid? {chainValidity ? 'Yes' : 'No'}</h3> : null}
+                
             </>
             : null}
         </>
