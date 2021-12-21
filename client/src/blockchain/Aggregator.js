@@ -106,11 +106,11 @@ function Aggregator({ blockchain, walletList }) {
     useEffect(() => {
         if(initiateWalletBalance && signature.length) {
             // separate into separate use effect to include mined amount...
-            walletList.forEach((wallet) => {
-                console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
-            })
-            console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
-            AttemptToAlterChain(blockchain, 200, signature)
+            // walletList.forEach((wallet) => {
+            //     console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
+            // })
+            // console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
+            // AttemptToAlterChain(blockchain, 200, signature)
             
             // just need to add additional info to match the example project's blockchain...
             console.log(JSON.stringify({ ...blockchain, pendingTransactions }, null, 4));
@@ -167,8 +167,7 @@ function Aggregator({ blockchain, walletList }) {
             {pendingTransactions.map((pendingTransaction, index) => <ul key={index}><li>from Address:   -</li><li>to Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li><li>amount: {pendingTransaction.amount}</li></ul>)}
             <h3>Wallet list:</h3>
             {walletList.map((wallet, index) => <p key={index}>Balance of {wallet.name}'s wallet is: {wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}</p>)}
-            <h3>Is the chain valid?</h3>
-            <FormToAlterChain blockchain={blockchain} signature={signature} />
+            <FormToAlterChain blockchain={blockchain} signature={signature} walletList={walletList} />
 
             <h3>Blockchain:</h3>
             <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>

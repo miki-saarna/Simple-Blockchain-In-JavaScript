@@ -10,7 +10,7 @@ function ChainValidator({ chain }, signature) {
         // is there a way to destructure previousBlock without variable name collisions?
 
         // check if all transactions in the block are valid
-        if (!BlockValidator(currentBlock, signature)) {
+        if (!BlockValidator(currentBlock, signature[i - 1])) {
             return false
         }
         // check if current block hash is valid

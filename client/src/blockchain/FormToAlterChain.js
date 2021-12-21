@@ -2,14 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import ChainValidator from '../validators/ChainValidator';
 
-export default function FormToAlterChain({ blockchain, signature }) {
-
-    const initialFormState = {
-        fromAddress: '',
-        toAddress: '',
-        amount: '',
-        signature: '',
-    }
+export default function FormToAlterChain({ blockchain, signature, walletList }) {
 
     const [blockSelected, setBlockSelected] = useState();
     const [foundTx, setFoundTx] = useState({})
@@ -20,42 +13,61 @@ export default function FormToAlterChain({ blockchain, signature }) {
         event.preventDefault();
         if (block === 0) {
             console.error('No alterations can be done on the Genesis Block...');
+            return;
             // return <p>No alterations can be done on the Genesis Block...</p>
-        } else if (block === 1) {
-            const originalAmount = blockchain.chain[block].transactions[0]
-            setFoundTx(originalAmount)
-            setAlteredTx(originalAmount);
         }
-        else {
-            const originalAmount = blockchain.chain[block].transactions[1]
-            setFoundTx(originalAmount)
-            setAlteredTx(originalAmount)
-        }
+        const originalAmount = blockchain.chain[block].transactions[blockchain.chain[block].transactions.length - 1]
+        setFoundTx(originalAmount)
+        setAlteredTx(originalAmount);
         setBlockSelected(block);
+    }
+
+    function walletSelector(event, toOrFrom, walletAddress) {
+        event.preventDefault();
+        
+        setAlteredTx((alteredTxData) => ({
+            ...alteredTxData,
+            [toOrFrom]: walletAddress,
+        }))
     }
 
     function changeHandler( { target: { name, value } } ) {
         if (Number.isInteger(parseInt(value))) {
             value = parseInt(value)
         } 
-        setAlteredTx({
-            ...foundTx,
+        setAlteredTx((alteredTxData) => ({
+            ...alteredTxData,
             [name]: value,
-        })
+        }))
     }
+
+    const walletsPublicKeys = walletList.map((wallet) => wallet.publicKey);
 
     function submitHandler(event) {
         event.preventDefault();
-        blockchain.chain[blockSelected].transactions[0] = alteredTx;
+        if (!walletsPublicKeys.includes(alteredTx.fromAddress) || !walletsPublicKeys.includes(alteredTx.toAddress)) {
+            console.error('Only valid addresses may be used for altering transactions. Try selecting the names of the wallets listed below...');
+            return;
+        }
+        blockchain.chain[blockSelected].transactions[blockchain.chain[blockSelected].transactions.length - 1] = alteredTx;
+        // blockchain.chain[blockSelected].transactions[0] = alteredTx;
         console.log('Is the chain still valid? ' + ChainValidator(blockchain, signature));
-        setChainValidity(ChainValidator(blockchain, signature))
-        blockchain.chain[blockSelected].transactions[0] = foundTx;
+        setChainValidity(ChainValidator(blockchain, signature));
+        blockchain.chain[blockSelected].transactions[blockchain.chain[blockSelected].transactions.length - 1] = foundTx;
     }
+    
+    // useEffect(() => {
+    //     if (!chainValidity) {
+            // setChainValidity(true);
+            // setChainValidity(ChainValidator(blockchain, signature))
+        // }
+    // }, [chainValidity])
 
     return (
         <>
             {blockchain.chain.length > 1 ?
             <>
+                <h3>Is the chain valid? {ChainValidator(blockchain, signature) ? 'Yes' : 'No'}</h3>
                 <h2>Alter chain:</h2>
                 <ul>{blockchain.chain.map((chain, index) => <li key={index} onClick={(event) => blockSelector(event, index)}>{index + 1}</li>)}</ul>
                 {Object.keys(alteredTx).length ?
@@ -72,6 +84,10 @@ export default function FormToAlterChain({ blockchain, signature }) {
                     >
                     </input>
 
+                    <ul>
+                    {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'fromAddress', wallet.publicKey)}>{wallet.name}</li>)}
+                    </ul>
+
                     <label htmlFor='toAddress'>
                         To address:
                     </label>
@@ -83,6 +99,10 @@ export default function FormToAlterChain({ blockchain, signature }) {
                       onChange={changeHandler}
                     >
                     </input>
+
+                    <ul>
+                    {walletList.map((wallet, index) => <li key={index} onClick={(event) => walletSelector(event, 'toAddress', wallet.publicKey)}>{wallet.name}</li>)}
+                    </ul>
 
                     <label htmlFor='amount'>
                         Amount:
