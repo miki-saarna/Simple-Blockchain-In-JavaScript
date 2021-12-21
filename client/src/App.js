@@ -18,7 +18,8 @@ function App() {
 
   return (
     <>
-  
+      <h1>Blockchain Transaction Simulation</h1>
+      <p className='red'>*Instructions are in red text</p>
       <CreateWalletName walletList={walletList} setWalletList={setWalletList} />
       <Aggregator blockchain={blockchain} walletList={walletList} />
     </>

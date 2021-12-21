@@ -153,26 +153,34 @@ function Aggregator({ blockchain, walletList }) {
     const pendingTransactionDetails = pendingTransactions.map((pendingTransaction, index) => {
         if(!pendingTransaction.fromAddress) {
             return (
-                <>
-                    <ul key={index}>
-                        <li>From Address:   -</li>
-                        <li>To Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li>
-                        <li>amount: {pendingTransaction.amount}</li>
-                    </ul>
-                </>
+                <ul key={index}>
+                    <li>From Address:   -</li>
+                    <li>To Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li>
+                    <li>amount: {pendingTransaction.amount}</li>
+                </ul>
             )
         } else {
             return (
-                <>
-                    <ul key={index}>
-                        <li>From Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.fromAddress).name}</li>
-                        <li>To Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li>
-                        <li>amount: {pendingTransaction.amount}</li>
-                    </ul>
-                </>
+                <ul key={index}>
+                    <li>From Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.fromAddress).name}</li>
+                    <li>To Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li>
+                    <li>amount: {pendingTransaction.amount}</li>
+                </ul>
             )
         }
     })
+
+    // recycled elsewhere???
+    const miningRewardTransaction = blockchain.chain[blockchain.chain.length - 1].transactions.find((transaction) => !transaction.fromAddress)
+    
+    // if (miningRewardTransaction) {
+    //     return (
+    //         <ul key={miningRewardTransaction.index}>
+    //             <li>To Address: {miningRewardTransaction.toAddress}</li>
+    //             <li>Amount: {miningRewardTransaction.amount}</li>
+    //         </ul>
+    //     )
+    // }
     
     return (
         <>
@@ -204,6 +212,13 @@ function Aggregator({ blockchain, walletList }) {
             <div className='section-details'>
                 <h3>Pending Transaction(s):</h3>
                 {pendingTransactionDetails}
+            </div>
+
+            <div className='section-details'>
+                <h3>Mining Reward Awarded:</h3>
+                {blockchain.chain.length > 2
+                    ? <ul><li>To Address: {walletList.find((wallet) => wallet.publicKey === miningRewardTransaction.toAddress).name}</li><li>Amount: {miningRewardTransaction.amount}</li></ul>
+                    : null}
             </div>
 
             <div className='section-details'>
