@@ -6,6 +6,7 @@ import MinePendingTransactions from '../transactions/MinePendingTransactions';
 import GetWalletBalance from '../wallets/GetWalletBalance';
 import ChainValidator from '../validators/ChainValidator';
 import AttemptToAlterChain from './AttemptToAlterChain';
+import FormToAlterChain from './FormToAlterChain';
 
 function Aggregator({ blockchain, walletList }) {
 
@@ -17,10 +18,11 @@ function Aggregator({ blockchain, walletList }) {
     const [formSubmission, setFormSubmission] = useState(false);
     const [tx, setTx] = useState({})
     const [pendingTransactions, setPendingTransactions] = useState([]);
+    // signature should be plural? signatures...
     const [signature, setSignature] = useState([]);
     const [initiateMining, setInitiateMining] = useState(false);
     const [initiateWalletBalance, setInitiateWalletBalance] = useState(false);
-    // const [balanceofWallets, setBalanceOfWallets] = useState(walletList.)
+    const [chainAltered, setChainAltered] = useState(false);
 
     // unsure if useEffect is necessary...
     useEffect(() => {
@@ -103,7 +105,7 @@ function Aggregator({ blockchain, walletList }) {
 
     useEffect(() => {
         if(initiateWalletBalance && signature.length) {
-            // separate into separate use effect to include mined amount....
+            // separate into separate use effect to include mined amount...
             walletList.forEach((wallet) => {
                 console.log(`Balance of ${wallet.name}\'s wallet is: ${wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}`)
             })
@@ -115,6 +117,14 @@ function Aggregator({ blockchain, walletList }) {
             setInitiateWalletBalance(!initiateWalletBalance);
         }
     },[initiateWalletBalance]);
+
+    useEffect(() => {
+        console.log('Is the chain valid? ' + ChainValidator(blockchain, signature));
+        if(chainAltered) {
+            AttemptToAlterChain(blockchain, 200, signature);
+            setChainAltered(!chainAltered);
+        }
+    }, [chainAltered])
 
     // create to loop through transaction properties
     const transactionProperties = [];
@@ -140,12 +150,11 @@ function Aggregator({ blockchain, walletList }) {
     // check if exists elsewhere...
     const minedBlock = blockchain.chain[blockchain.chain.length - 1]
     
-
     return (
         <>
             <h3>Number of blocks: {blockchain.chain.length}</h3>
             {/* use CSS to create blocks */}
-            <div>{blockchain.chain.map((block, index) => <div key={index}>hello</div>)}</div>
+            <div>{blockchain.chain.map((block, index) => <div key={index}>{index + 1}</div>)}</div>
             {walletList.length > 1 ? <CreateTransaction setTransaction={setTx} walletList={walletList} setFormSubmission={setFormSubmission} /> : null}
             <h3>Transaction details:</h3>
             {tx ? <ul>{transactionProperties.map((property, index) => <li key={index}>{property}</li>)}</ul> : null}
@@ -155,9 +164,12 @@ function Aggregator({ blockchain, walletList }) {
             <h3>Mined block:</h3>
             {blockchain.chain.length > 1 ? <ul><li>nonce: {minedBlock.nonce}</li><li>hash: {minedBlock.hash}</li></ul> : null}
             <h3>Pending Transaction(s):</h3>
-            {pendingTransactions.map((pendingTransaction, index) => <ul key={index}><li>from Address:  -</li><li>to Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li><li>amount: {pendingTransaction.amount}</li></ul>)}
+            {pendingTransactions.map((pendingTransaction, index) => <ul key={index}><li>from Address:   -</li><li>to Address: {walletList.find((wallet) => wallet.publicKey === pendingTransaction.toAddress).name}</li><li>amount: {pendingTransaction.amount}</li></ul>)}
             <h3>Wallet list:</h3>
             {walletList.map((wallet, index) => <p key={index}>Balance of {wallet.name}'s wallet is: {wallet.amount + GetWalletBalance(blockchain, wallet.publicKey)}</p>)}
+            <h3>Is the chain valid?</h3>
+            <FormToAlterChain blockchain={blockchain} signature={signature} />
+
             <h3>Blockchain:</h3>
             <p>{JSON.stringify({ ...blockchain, pendingTransactions }, null, 4)}</p>
         </>
