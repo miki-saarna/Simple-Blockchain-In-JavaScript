@@ -5,11 +5,10 @@ import CreateWalletName from './wallets/CreateWallet';
 
 import Aggregator from './blockchain/Aggregator';
 
-// const walletList = [];
+// initializes the blockchain by creating the Genesis block
 const blockchain = CreateBlockchain();
 
 function App() {
-  // initializes the blockchain by creating the Genesis block
   
   
   const [walletList, setWalletList] = useState([]);

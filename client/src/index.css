@@ -34,7 +34,7 @@ form h4 {
 form {
   border: 1px solid #1a1a1a;
   border-radius: 5px;
-  padding: 10px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   background-color: #f1f1f1
@@ -126,6 +126,55 @@ form h3:last-child {
 .section-details {
   border: 1px solid #1a1a1a;
   border-radius: 5px;
-  padding: 7px;
-  margin: 10px 0;
+  padding: 12px 15px;
+  margin: 12px 0;
+}
+
+@media only screen and (min-width: 600px) {
+  body {
+    padding: 20px 40px;
+  }
+
+  form {
+    padding: 20px 25px;
+  }
+
+  .section-details {
+    padding: 15px 25px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  body {
+    padding: 30px 60px;
+  }
+
+  form {
+    padding: 40px 35px;
+  }
+
+  .section-details {
+    padding: 20px 35px;
+  }
+}
+
+@media only screen and (min-width: 1024px) {
+  body {
+    padding: 40px 120px;
+  }
+
+  form {
+    padding: 40px 45px;
+  }
+
+  .section-details {
+    padding: 35px 45px;
+    margin: 15px 0;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  body {
+    padding: 80px 200px;
+  }
 }
