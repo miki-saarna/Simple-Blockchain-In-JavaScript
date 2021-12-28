@@ -41,50 +41,6 @@ This application is based off of the following project: https://github.com/wizel
 
 ## Application Features:
 
-### Wallet Creation
-
-The user can create as many wallets as desired with 3 options for the initial deposit amount for each wallet.
-
-### Number of blocks
-
-Displays the current number of blocks in the blockchain. The first block is created by default and is known as the "Genesis Block".
-
-### New Transaction
-
-Create a new transaction by clicking on the wallet names to auto-fill the to and from addresses and type a transaction amount. Transaction validations, such as insufficient funds or misspelled addresses, will simply result in the transaction being nullified.
-
-### Transaction Details
-
-Displays the details of the latest transaction.
-
-### Status
-
-Dislays the current status of the latest block.
-
-### Mined block
-
-Displays nonce and hash details on the latest block mined.
-
-### Pending Transaction(s)
-
-Displays the pending transaction(s), which will usually be the mining reward from the mining of the latest block.
-
-### Mining Reward Awarded
-
-Displays the amount of the latest mining reward awarded as well as the whose wallet it was awarded to.
-
-### Wallet list
-
-Displays the current balance of each wallet in the blockchain
-
-### Alter chain
-
-Allows the user to alter a block on the blockchain and check for chain validity. Note: the "Genesis Block" cannot be altered.
-
-### Blockchain
-
-Displays the entire blockchain in JSON format.
-
 | Section                                                  | Description                                                                                                         |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | Wallet Creation                                 | The user can create as many wallets as desired with 3 options for the initial deposit amount for each wallet.                                      |
